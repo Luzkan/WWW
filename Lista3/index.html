@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>HTML5 Puzzle</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload" onload="init();">
+		<div id="wrapper">
+			<header id="header">
+				<div class="content">
+					<div class="inner">
+						<h1>Solve the Puzzle!</h1>
+						<canvas id="puzzleCanvas"></canvas>
+					</div>
+				</div>	
+				<nav>
+					<ul>
+						<li><a href="#options">Options</a></li>
+						<li><a href="#" id="restart">Restart</a></li>
+					</ul>
+				</nav>
+			</header>	
+			
+			<div id="main">
+				<article id="options">
+					<h2 class="major">Options</h2>
+					<p></p>
+					<form method="post" action="#">
+						<div class="fields">
+							<div class="field half">
+								<label for="columns">Columns</label>
+								<input type="text" name="columns" id="columns" value="4"/>
+							</div>
+							<div class="field half">
+								<label for="rows">Rows</label>
+								<input type="text" name="rows" id="rows" value="4"/>
+							</div>
+						</div>
+					</form>
+
+					<div class="rowImages">
+						<div class="columnImages">
+							<img src="images/1-min.png" alt="1" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/2-min.png" alt="2" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/3-min.png" alt="3" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/4-min.png" alt="4" onclick="showImage(this);">
+						</div>
+					</div>
+
+					<div class="rowImages">
+						<div class="columnImages">
+							<img src="images/5-min.png" alt="5" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/6-min.png" alt="6" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/7-min.png" alt="7" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/8-min.png" alt="8" onclick="showImage(this);">
+						</div>
+					</div>
+						
+					<div class="rowImages">
+						<div class="columnImages">
+							<img src="images/9-min.png" alt="9" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/10-min.png" alt="10" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/11-min.png" alt="11" onclick="showImage(this);">
+						</div>
+						<div class="columnImages">
+							<img src="images/12-min.png" alt="12" onclick="showImage(this);">
+						</div>
+					</div>
+					<p></p>
+
+					<ul class="actions">
+						<li><button id="resizeGameBtn" class="primary">Done</button></li>
+						<li><input type="reset" id="reset" value="Default" /></li>
+					</ul>
+
+					<div class="container">
+						<span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+						<img id="expandedImg" style="width:100%">
+						<div id="imgtext"></div>
+					</div>
+
+				</article>
+			</div>
+
+			<footer id="footer">
+				<p class="copyright">&copy; Marcel Jerzyk.</p>
+			</footer>
+		</div>
+		<div id="bg"></div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/functions.js"></script>
+		<script src="assets/js/puzzle.js"></script>
+		<script src="assets/js/main.js"></script>
+	</body>
+</html>
