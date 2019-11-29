@@ -613,15 +613,13 @@ body.is-preload *, body.is-preload *:before, body.is-preload *:after {
 
         /* Navbar horyzontalnie */
 
-		/* Nav on very left have two pixels, so I changed to targeted border */
+		/* Fixed for vertical */
 		#header nav ul {
 			display: flex;
 			margin-bottom: 0;
 			list-style: none;
 			padding-left: 0;
-			border-top: solid 1px #ffffff;
-			border-bottom: solid 1px #ffffff;
-			border-right:  solid 1px #ffffff;
+			border: solid 1px #ffffff;
 			border-radius: 4px;
 		}
 

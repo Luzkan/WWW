@@ -9,9 +9,11 @@ document.getElementById("resizeGameBtn").addEventListener("click", function(even
     initPuzzle();
 });
 
+let finished = true;
 // Restarting the game
 document.getElementById("restart").addEventListener("click", function(event){
     event.preventDefault();
+    console.log("Restarting!");
     initPuzzle();
 });
 
@@ -23,33 +25,41 @@ document.getElementById("reset").addEventListener("click", function(event){
     initPuzzle();
 });
 
-const PUZZLE_HOVER_TINT = "#009900"; /*kolor tla puzzla doc.*/
+// Touch
+let touchScreen = false;
+window.addEventListener('touchstart', function(e) {
+    touchScreen = true;
+    return true;
+});
+
+const PUZZLE_HOVER_TINT = "#FF2D00";
 var cnvs;
-var _stage; /*kontekst 2D*/
-var _img; /*załadowany obrazek*/
-var _pieces; /*tablica współ. dla kawałków*/
-var _puzzleWidth; /*szeroko´s´c układanki*/
-var _puzzleHeight; /*wysoko´s´c układanki*/
-var _pieceWidth; /*szeroko´s´c puzzla*/
-var _pieceHeight; /*wysoko´s´c puzzla*/
-var _currentPiece; /*aktualnie przeci ˛agany*/
-var _currentDropPiece; /*puzzle na jaki upuszczamy*/
-var _mouse; /*x,y - pozycja wska´znika myszy*/
+var _stage;
+var _img; 
+var _pieces; 
+var _puzzleWidth; 
+var _puzzleHeight; 
+var _pieceWidth;
+var _pieceHeight; 
+var _currentPiece; 
+var _currentDropPiece; 
+var _mouse; 
 
 function init(){
+    console.log("Halo2");
     _img = new Image();
     _img.addEventListener("load",onImage);
     _img.src = "images/8.png";
 }
 
 function reinit(newimgurl){
+    console.log("Halo");
     _img = new Image();
     _img.addEventListener("load",onImage);
     _img.src = newimgurl;
 }
 
 function onImage(){
-
     _pieceWidth = Math.floor(_img.width / rows.value)
     _pieceHeight = Math.floor(_img.height / columns.value)
     _puzzleWidth = _pieceWidth * rows.value;
@@ -66,11 +76,11 @@ function setCanvas(){
     cnvs.style.border = "1px solid white";
 }
     
-function initPuzzle(){ /*inicjalizacja pierwotna i na replay*/
+function initPuzzle(){
     _pieces = [];
     _mouse = {x:0,y:0};
-    _currentPiece = null; /*na wypadek replay*/
-    _currentDropPiece = null; /*na wypadek replay*/
+    _currentPiece = null; 
+    _currentDropPiece = null;
     _stage.drawImage(_img, 0, 0, _puzzleWidth, _puzzleHeight,
     0, 0, _puzzleWidth, _puzzleHeight);
     createTitle("Start the Game");
@@ -82,7 +92,7 @@ function createTitle(msg){
     _stage.globalAlpha = .4;
     _stage.fillRect(100,_puzzleHeight - 40,_puzzleWidth - 200,40);
     _stage.fillStyle = "#FFFFFF";
-    _stage.globalAlpha = 1; /*˙zeby tekst nie był przezr.*/
+    _stage.globalAlpha = 1;
     _stage.textAlign = "center";
     _stage.textBaseline = "middle";
     _stage.font = "20px Arial";
@@ -105,10 +115,18 @@ function buildPieces(){
             yPos += _pieceHeight;
         }
     }
-    document.onmousedown = shufflePuzzle;
+    console.log("Halo3");
+    if(touchScreen){
+        console.log("TouchScreen Detected (shuffle)");
+        document.ontouchstart = shufflePuzzle;
+    }else{
+        console.log("TouchScreen Not Detected (shuffle)");
+        document.onmousedown = shufflePuzzle;
+    }
 }
 
 function shufflePuzzle(){
+    if(touchScreen) document.onmousedown = console.log("This is stupid fix overriding onmousedown.");
     _pieces = shuffleArray(_pieces);
     _stage.clearRect(0,0,_puzzleWidth,_puzzleHeight);
     var i;
@@ -139,37 +157,46 @@ function shufflePuzzle(){
             yPos += _pieceHeight;
         }
     }
-    document.onmousedown = onPuzzleClick;
+    console.log("TouchScreen:" + touchScreen);
+    if(touchScreen){
+        document.ontouchstart = onPuzzleClick;
+    }else{
+        document.onmousedown = onPuzzleClick;
+    }
 }
 
 function onPuzzleClick(e){
+    if (e.target == document.getElementById("puzzleCanvas")) {
 
-    console.log("[Actual] X: " + e.layerX + "Y: " + e.layerY);
-
-    // if(e.layerX || e.layerX == 0){
-    //     _mouse.x = e.layerX - cnvs.offsetLeft;
-    //     _mouse.y = e.layerY - cnvs.offsetTop;
-    // }else if(e.offsetX || e.offsetX == 0){
-    //     _mouse.x = e.offsetX - cnvs.offsetLeft;
-    //     _mouse.y = e.offsetY - cnvs.offsetTop;
-    // }
-
-    _mouse.x = e.layerX;
-    _mouse.y = e.layerY;
-
-    console.log("[Mouse] X: " + _mouse.x + "Y: " + _mouse.y);
-
-    _currentPiece = checkPieceClicked();
+        if(touchScreen){
+            console.log("XD");
+            var rect = e.target.getBoundingClientRect();
+            _mouse.x = e.targetTouches[0].pageX - rect.left;
+            _mouse.y = e.targetTouches[0].pageY - rect.top;
+        }else{
+            console.log("X--D");
+            _mouse.x = e.layerX;
+            _mouse.y = e.layerY;
+        }
     
-    if(_currentPiece != null){
-        _stage.clearRect(_currentPiece.xPos,_currentPiece.yPos,_pieceWidth,_pieceHeight);
-        _stage.save(); 
-        _stage.globalAlpha = .9;
-        _stage.drawImage(_img, _currentPiece.sx, _currentPiece.sy,_pieceWidth, _pieceHeight, _mouse.x - (_pieceWidth / 2), _mouse.y - (_pieceHeight / 2), _pieceWidth, _pieceHeight);
-        _stage.restore();
-        document.onmousemove = updatePuzzle;
-        document.onmouseup = pieceDropped;
+        console.log("[Detected Mouse/Touch] X: " + _mouse.x + " Y: " + _mouse.y);
+
+        _currentPiece = checkPieceClicked();
+        
+        if(_currentPiece != null){
+            _stage.clearRect(_currentPiece.xPos,_currentPiece.yPos,_pieceWidth,_pieceHeight);
+            _stage.save(); 
+            _stage.globalAlpha = .9;
+            _stage.drawImage(_img, _currentPiece.sx, _currentPiece.sy,_pieceWidth, _pieceHeight, _mouse.x - (_pieceWidth / 2), _mouse.y - (_pieceHeight / 2), _pieceWidth, _pieceHeight);
+            _stage.restore();
+            document.onmousemove = updatePuzzle;
+            document.ontouchmove = updatePuzzle;
+            document.onmouseup = pieceDropped;
+            document.ontouchend = pieceDropped;
+        }
+        return;
     }
+    console.log("Clicked outside of the Canvas (fix for any weird behavior).");
 }
 
 function checkPieceClicked(){
@@ -186,28 +213,29 @@ function checkPieceClicked(){
     return null;
 }
 
+
+
 function detectRedBlock(piece){
     console.log(piece);
-
     if(piece.xPos - _pieceWidth == _pieces[0].xPos && piece.yPos == _pieces[0].yPos) return true;
     if(piece.xPos + _pieceWidth == _pieces[0].xPos && piece.yPos == _pieces[0].yPos) return true;
     if(piece.xPos == _pieces[0].xPos && piece.yPos - _pieceHeight == _pieces[0].yPos) return true;
     if(piece.xPos == _pieces[0].xPos && piece.yPos + _pieceHeight == _pieces[0].yPos) return true;
-
 }
     
 function updatePuzzle(e){
     _currentDropPiece = null;
-    // if(e.layerX || e.layerX == 0){
-    //     _mouse.x = e.layerX - cnvs.offsetLeft;
-    //     _mouse.y = e.layerY - cnvs.offsetTop;
-    // }else if(e.offsetX || e.offsetX == 0){
-    //     _mouse.x = e.offsetX - cnvs.offsetLeft;
-    //     _mouse.y = e.offsetY - cnvs.offsetTop;
-    // }
 
-    _mouse.x = e.layerX;
-    _mouse.y = e.layerY;
+    if(touchScreen){
+        // console.log("XD");
+        var rect = e.target.getBoundingClientRect();
+        _mouse.x = e.targetTouches[0].pageX - rect.left;
+        _mouse.y = e.targetTouches[0].pageY - rect.top;
+    }else{
+        // console.log("X--D");
+        _mouse.x = e.layerX;
+        _mouse.y = e.layerY;
+    }
 
     _stage.clearRect(0,0,_puzzleWidth,_puzzleHeight);
     var i;
@@ -255,17 +283,21 @@ function updatePuzzle(e){
 function pieceDropped(e){
     document.onmousemove = null;
     document.onmouseup = null;
+    document.ontouchmove = null;
+    document.ontouchend = null;
     if(_currentDropPiece != null){
+        if(_currentDropPiece.xPos == _pieces[0].xPos && _currentDropPiece.yPos == _pieces[0].yPos){
+
         var tmp = {xPos:_currentPiece.xPos,yPos:_currentPiece.yPos};
         _currentPiece.xPos = _currentDropPiece.xPos;
         _currentPiece.yPos = _currentDropPiece.yPos;
         _currentDropPiece.xPos = tmp.xPos;
         _currentDropPiece.yPos = tmp.yPos;
+        }
     }
     resetPuzzleAndCheckWin();
 }
     
-
 function resetPuzzleAndCheckWin(){
     _stage.clearRect(0,0,_puzzleWidth,_puzzleHeight);
     var gameWin = true;
@@ -299,5 +331,8 @@ function gameOver(){
     document.onmousedown = null;
     document.onmousemove = null;
     document.onmouseup = null;
+    document.ontouchstart = null;
+    document.ontouchmove = null;
+    document.ontouchend = null;
     initPuzzle();
 }
