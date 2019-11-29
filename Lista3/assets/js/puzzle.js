@@ -64,6 +64,14 @@ function onImage(){
     _pieceHeight = Math.floor(_img.height / columns.value)
     _puzzleWidth = _pieceWidth * rows.value;
     _puzzleHeight = _pieceHeight * columns.value;
+    while(screen.width/1.2 < _puzzleWidth){
+        _pieceWidth /= 1.1;
+        _pieceHeight /= 1.1; 
+        _puzzleWidth /= 1.1;
+        _puzzleHeight /= 1.1;
+    }
+    console.log("PuzzleWidth: " + _puzzleWidth + " PuzzleHeight: " + _puzzleHeight);
+    console.log(screen.width);
     setCanvas();
     initPuzzle();
 }

@@ -908,3 +908,7 @@ body.is-preload *, body.is-preload *:before, body.is-preload *:after {
 	font-size: 35px;
 	cursor: pointer;
   }
+  
+  .puzzleCanvas{
+	touch-action: none;
+  }
