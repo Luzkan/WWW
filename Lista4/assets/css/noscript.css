@@ -1,0 +1,7 @@
+body.is-preload #header.alt > * {
+	opacity: 1;
+}
+
+body.is-preload #header.alt .logo {
+	transform: none;
+}
