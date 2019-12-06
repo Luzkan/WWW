@@ -138,6 +138,7 @@ function buildPieces(){
 
 function shufflePuzzle(){
     if(touchScreen) document.onmousedown = console.log("This is stupid fix overriding onmousedown.");
+    console.log(_pieces);
     _pieces = shuffleArray(_pieces);
     _stage.clearRect(0,0,_puzzleWidth,_puzzleHeight);
     var i;
@@ -193,8 +194,9 @@ function onPuzzleClick(e){
         console.log("[Detected Mouse/Touch] X: " + _mouse.x + " Y: " + _mouse.y);
 
         _currentPiece = checkPieceClicked();
-        
+
         if(_currentPiece != null){
+            console.log("Good");
             _stage.clearRect(_currentPiece.xPos,_currentPiece.yPos,_pieceWidth,_pieceHeight);
             _stage.save(); 
             _stage.globalAlpha = .9;
@@ -217,21 +219,25 @@ function checkPieceClicked(){
         piece = _pieces[i];
         if(_mouse.x < piece.xPos || _mouse.x > (piece.xPos + _pieceWidth) || _mouse.y < piece.yPos || _mouse.y > (piece.yPos + _pieceHeight)){
             //PIECE NOT HIT
+            console.log("X: " + piece.xPos + " Y: " + piece.yPos)
         }else{
             if(detectRedBlock(piece)) return piece;
         }
     }
+    console.log("Not found")
     return null;
 }
 
-
-
 function detectRedBlock(piece){
+    console.log("[r]");
     console.log(piece);
-    if(piece.xPos - _pieceWidth == _pieces[0].xPos && piece.yPos == _pieces[0].yPos) return true;
-    if(piece.xPos + _pieceWidth == _pieces[0].xPos && piece.yPos == _pieces[0].yPos) return true;
-    if(piece.xPos == _pieces[0].xPos && piece.yPos - _pieceHeight == _pieces[0].yPos) return true;
-    if(piece.xPos == _pieces[0].xPos && piece.yPos + _pieceHeight == _pieces[0].yPos) return true;
+    console.log(_pieces[0]);
+    console.log("WARUNEK 1: " + (piece.xPos-_pieceWidth) + " MA BYĆ: " + _pieces[0].xPos);
+    console.log("WARUNEK 2: " + piece.yPos + " MA BYĆ: " + _pieces[0].yPos);
+    if((piece.xPos - _pieceWidth).toFixed(4) == _pieces[0].xPos.toFixed(4) && piece.yPos == _pieces[0].yPos){ console.log("1"); return true; }
+    if((piece.xPos + _pieceWidth).toFixed(4) == _pieces[0].xPos.toFixed(4) && piece.yPos == _pieces[0].yPos){ console.log("2"); return true;}
+    if(piece.xPos == _pieces[0].xPos && (piece.yPos - _pieceHeight).toFixed(4) == _pieces[0].yPos.toFixed(4)){ console.log("3"); return true; }
+    if(piece.xPos == _pieces[0].xPos && (piece.yPos + _pieceHeight).toFixed(4) == _pieces[0].yPos.toFixed(4)){ console.log("4"); return true; }
 }
     
 function updatePuzzle(e){
